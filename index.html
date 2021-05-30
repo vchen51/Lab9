@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "abd1177872b24a97a64840e972cf7f37"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
+                        
   <title>Lab 9</title>
 
   <style>
@@ -55,18 +63,94 @@
     <button>Trigger a Global Error</button>
   </section>
 
+              
+
   <script>
+    
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch(err) {
+        console.error('encountered calculation error');
+      } finally {
+        console.log('finally block');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+    errorBtns[0].addEventListener('click', () => {
+      console.log("logging");
+    });
+
+    errorBtns[1].addEventListener('click', () => {
+      console.error("erroring");
+    });
+
+    errorBtns[2].addEventListener('click', () => {
+      console.dir(document.location);
+    });
+
+    errorBtns[3].addEventListener('click', () => {
+      console.dirxml(history);
+    });
+
+    errorBtns[4].addEventListener('click', () => {
+      console.group("hello");
+    });
+
+    errorBtns[5].addEventListener('click', () => {
+      const label = "hi"
+      console.groupEnd(label);
+    });
+
+    errorBtns[6].addEventListener('click', () => {
+      console.table([
+        { first: "lucy", last: "snooze",},
+        { first: "lucy", last: "flowering",},
+        { first: "lucy", last: "jogging",}
+      ]);
+    });
+    
+    errorBtns[7].addEventListener('click', () => {
+      console.time("timing");
+    });
+
+    errorBtns[8].addEventListener('click', () => {
+      console.timeEnd("timing end");
+    });
+
+    errorBtns[9].addEventListener('click', () => {
+      function trace() {
+        const tracer = () => console.trace();
+        tracer();
+      }
+    });
+
+    class testError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "CustomError";
+      }
+    }
+
+    function throwTest() {
+      throw new testError("throw error test");
+    }
+
+    errorBtns[10].addEventListener('click', () => {
+      throwTest();
+    });
+
+    window.onerror = (message, source, lineno, colno, error) => {
+      console.log("GLOBAL ERROR:", message, source, lineno, colno, error);
+    };
+
   </script>
 </body>
 </html>
